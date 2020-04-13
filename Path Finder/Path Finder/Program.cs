@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Path_Finder
 {
@@ -10,6 +6,12 @@ namespace Path_Finder
     {
         static void Main(string[] args)
         {
+            Grid grid = new Grid();
+            grid.SetupGrid();
+            grid.DrawGrid();
+
+            Console.Write("\n\nPress any key to end...");
+            Console.ReadKey();
         }
     }
 }
