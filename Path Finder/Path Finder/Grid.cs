@@ -159,6 +159,14 @@ namespace Path_Finder
                         GridArray[y, x].Neighbours.Add(GridArray[y, x + 1]);
                     if(x > 0)
                         GridArray[y, x].Neighbours.Add(GridArray[y, x - 1]);
+                    if(x > 0 && y > 0)
+                        GridArray[y, x].Neighbours.Add(GridArray[y - 1, x - 1]);
+                    if(x < horizontalPoints - 1 && y > 0)
+                        GridArray[y, x].Neighbours.Add(GridArray[y - 1, x + 1]);
+                    if(x > 0 && y < verticalPoints - 1)
+                        GridArray[y, x].Neighbours.Add(GridArray[y + 1, x - 1]);
+                    if(x < horizontalPoints - 1 && y < verticalPoints - 1)
+                        GridArray[y, x].Neighbours.Add(GridArray[y + 1, x + 1]);
                 }
             }
         }

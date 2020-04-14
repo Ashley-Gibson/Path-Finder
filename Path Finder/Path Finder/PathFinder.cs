@@ -61,8 +61,10 @@ namespace Path_Finder
                         if (grid.openSet.Exists(o => o.X == neighbour.X && o.Y == neighbour.Y))
                         {
                             if (tempG < neighbour.G)
+                            {
                                 neighbour.G = tempG;
-                            newPath = true;
+                                newPath = true;
+                            }
                         }
                         else
                         {
