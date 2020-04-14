@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using static Path_Finder.PathFinder;
 
 namespace Path_Finder
 {
     public class Grid
     {
-        // Grid will always be a 2D square/rectangle
         public const int horizontalPoints = 40;
         public const int verticalPoints = 30;
         public Spot[,] GridArray = new Spot[verticalPoints, horizontalPoints];
         
         // Grid Characters
         public const char SPACE = '~';
-        public const char PLAYER = '@';
+        public const char PLAYER = '$';
         public const char DESTINATION = '?';
         public const char OBSTACLE = '&';
         public const char NEWLINE = '\n';
@@ -55,6 +53,8 @@ namespace Path_Finder
         public int[] randomX = new int[numberOfObstacles];
         public int[] randomY = new int[numberOfObstacles];
 
+        public bool solutionFound = false;
+
         public void DrawGrid()
         {
             Console.Clear();
@@ -63,8 +63,10 @@ namespace Path_Finder
             {
                 for (int x = 0; x < horizontalPoints; x++)
                 {
-                    if (GridArray[y, x].Character == ROUTE)
+                    if (GridArray[y, x].Character == ROUTE || GridArray[y, x].Character == PLAYER)
                         Console.ForegroundColor = ConsoleColor.Blue;
+                    else if(GridArray[y, x].Character == DESTINATION)
+                        Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write(GridArray[y, x].Character);
                     Console.ForegroundColor = ConsoleColor.White;
                 }
@@ -132,7 +134,7 @@ namespace Path_Finder
             PlayerPosition.X = spot.X;
             PlayerPosition.Y = spot.Y;
 
-            GridArray[spot.Y, spot.X] = spot;               
+            GridArray[spot.Y, spot.X] = spot;
 
             UpdateNeighbours();
         }
