@@ -1,4 +1,8 @@
-﻿namespace Path_Finder
+﻿using System;
+using System.Collections.Generic;
+using static Path_Finder.Grid;
+
+namespace Path_Finder
 {
     public static class PathFinder
     {
@@ -7,25 +11,78 @@
             Left = 0,
             Right = 1,
             Up = 2,
-            Down = 3
+            Down = 3,
+            Undefined = 4
         }
 
-        public static Direction[] FindPath(Grid grid)
+        private static int CalculateHeuristic(Spot a, Spot b)
         {
-            Direction[] optimalPath = { };
-
-            
-
-            return optimalPath;
+            int d = Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
+            return d;
         }
 
-        public static void DisplayPath(Grid grid)
+        public static List<Spot> FindPath(Grid grid)
         {
-            Direction[] optimalPath = FindPath(grid);
+            List<Spot> optimalPath = new List<Spot>();
 
-            for (int i = 0; i < optimalPath.Length; i++)
-                grid.UpdateGrid(optimalPath[i]);
-        }
+            grid.openSet.Add(grid.GridArray[grid.PlayerPosition.Y,grid.PlayerPosition.X]);
+
+            while(grid.openSet.Count > 0)
+            {
+                int winner = 0;
+                for (int i = 0; i < grid.openSet.Count; i++)
+                {
+                    if (grid.openSet[i].F < grid.openSet[winner].F)
+                        winner = i;                      
+                }
+
+                Spot current = grid.openSet[winner];
+                current.Character = PLAYER;
+                grid.UpdateGridWithSpot(current);
+
+                if (grid.openSet[winner].X == grid.end.X && grid.openSet[winner].Y == grid.end.Y)
+                {
+                    Spot temp = current;
+                    while (temp.PreviousDirection != null)
+                    {
+                        optimalPath.Add(temp.PreviousDirection[0]);
+                    }
+
+                    Console.WriteLine("DONE!");
+                    return optimalPath;
+                }
+
+                grid.openSet.Remove(current);
+                grid.closedSet.Add(current);
+
+                for (int i = 0; i < current.Neighbours.Count; i++)
+                {
+                    Spot neighbour = current.Neighbours[i];
+                    if (!grid.closedSet.Exists(x => x.X == neighbour.X && x.Y == neighbour.Y))
+                    {
+                        int tempG = current.G + 1;
+
+                        if (grid.openSet.Exists(x => x.X == neighbour.X && x.Y == neighbour.Y))
+                        {
+                            if (tempG < neighbour.G)
+                                neighbour.G = tempG;
+                        }
+                        else
+                        {
+                            neighbour.G = tempG;
+                            grid.openSet.Add(neighbour);
+                        }
+
+                        neighbour.H = CalculateHeuristic(neighbour, grid.end);
+                        neighbour.F = neighbour.G + neighbour.H;
+                        neighbour.PreviousDirection = current.PreviousDirection;
+                    }
+                }
+            }
+
+            // Return no solution possible
+            return new List<Spot>();
+        }       
 
         #region Algorithm
 
