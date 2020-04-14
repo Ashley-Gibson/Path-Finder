@@ -1,17 +1,17 @@
-# PATH FINDER #
+# PATH FINDER
 
-# Technology #
+## Technology
 
 - C# .NET Console Application 
 
-# Source Control #
+## Source Control
 
-- GitHub: https://github.com/Ashley-Gibson/Path-Finder
+- [GitHub](https://github.com/Ashley-Gibson/Path-Finder)
 
-# Project Management #
+## Project Management
 
-- Azure DevOps: https://ashley-gibson.visualstudio.com/Path%20Finder/_boards/board/t/Path%20Finder%20Team/Stories
+- [Azure DevOps](https://ashley-gibson.visualstudio.com/Path%20Finder/_boards/board/t/Path%20Finder%20Team/Stories)
 
-# Inspiration #
+## Inspiration
 
-This project was inspired by a set of YouTube videos produced by The Coding Train on [YouTube]https://youtu.be/aKYlikFAV4k
+This project was inspired by a set of YouTube videos produced by The Coding Train on [YouTube](https://youtu.be/aKYlikFAV4k)
