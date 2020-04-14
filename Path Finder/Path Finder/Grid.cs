@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace Path_Finder
 {
@@ -15,6 +16,9 @@ namespace Path_Finder
         public const char DESTINATION = '?';
         public const char OBSTACLE = '&';
         public const char NEWLINE = '\n';
+        public const char ROUTE = '$';
+
+        public Point PlayerPosition = new Point(0,0);
 
         // Obstacles
         public const int numberOfObstacles = 30;
@@ -27,7 +31,12 @@ namespace Path_Finder
             for (int y = 0; y < verticalPoints; y++)
             {
                 for (int x = 0; x < horizontalPoints; x++)
+                {
+                    if (GridArray[y, x] == ROUTE)
+                        Console.ForegroundColor = ConsoleColor.Blue;
                     Console.Write(GridArray[y, x]);
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
 
                 Console.Write(NEWLINE);
             }
@@ -72,6 +81,37 @@ namespace Path_Finder
                         GridArray[y, x] = SPACE;
                 }               
             }
+
+            DrawGrid();
+        }
+
+        public void UpdateGrid(string direction)
+        {
+            switch(direction)
+            {
+                case "up":
+                    GridArray[PlayerPosition.Y,PlayerPosition.X] = ROUTE;
+                    PlayerPosition.Y -= 1;
+                    GridArray[PlayerPosition.Y, PlayerPosition.X] = PLAYER;
+                    break;
+                case "down":
+                    GridArray[PlayerPosition.Y, PlayerPosition.X] = ROUTE;
+                    PlayerPosition.Y += 1;
+                    GridArray[PlayerPosition.Y, PlayerPosition.X] = PLAYER;
+                    break;
+                case "left":
+                    GridArray[PlayerPosition.Y, PlayerPosition.X] = ROUTE;
+                    PlayerPosition.X -= 1;
+                    GridArray[PlayerPosition.Y, PlayerPosition.X] = PLAYER;
+                    break;
+                case "right":
+                    GridArray[PlayerPosition.Y, PlayerPosition.X] = ROUTE;
+                    PlayerPosition.X += 1;
+                    GridArray[PlayerPosition.Y, PlayerPosition.X] = PLAYER;
+                    break;
+            }
+
+            DrawGrid();
         }
     }
 }

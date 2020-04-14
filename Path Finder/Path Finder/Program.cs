@@ -10,7 +10,6 @@ namespace Path_Finder
         {
             Grid grid = new Grid();
             grid.SetupGrid();
-            grid.DrawGrid();
 
             Console.Write("\n\nPress any key to end...");
             Console.ReadKey();
