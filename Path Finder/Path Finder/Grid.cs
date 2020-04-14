@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using static Path_Finder.PathFinder;
 
@@ -7,9 +8,9 @@ namespace Path_Finder
     public class Grid
     {
         // Grid will always be a 2D square/rectangle
-        public const int horizontalPoints = 40;
-        public const int verticalPoints = 25;
-        public char[,] GridArray = new char[verticalPoints, horizontalPoints];
+        public const int horizontalPoints = 5;
+        public const int verticalPoints = 5;
+        public Spot[,] GridArray = new Spot[verticalPoints, horizontalPoints];
         
         // Grid Characters
         public const char SPACE = '~';
@@ -21,6 +22,33 @@ namespace Path_Finder
 
         public Point PlayerPosition = new Point(0,0);
 
+        public List<Spot> closedSet = new List<Spot>();
+        public List<Spot> openSet = new List<Spot>();
+
+        public readonly Spot start = new Spot()
+        {
+            F = 10000,
+            G = 0,
+            H = 10000,
+            X = 0,
+            Y = 0,
+            Character = PLAYER,
+            Neighbours = new List<Spot>(),
+            PreviousSpot = new List<Spot>()
+        };
+
+        public readonly Spot end = new Spot()
+        {
+            F = 0,
+            G = 0,
+            H = 0,
+            X = horizontalPoints - 1,
+            Y = verticalPoints - 1,
+            Character = DESTINATION,
+            Neighbours = new List<Spot>(),
+            PreviousSpot = new List<Spot>()
+        };
+
         // Obstacles
         public const int numberOfObstacles = 30;
         public readonly Random random = new Random();
@@ -29,13 +57,15 @@ namespace Path_Finder
 
         public void DrawGrid()
         {
+            Console.Clear();
+
             for (int y = 0; y < verticalPoints; y++)
             {
                 for (int x = 0; x < horizontalPoints; x++)
                 {
-                    if (GridArray[y, x] == ROUTE)
+                    if (GridArray[y, x].Character == ROUTE)
                         Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.Write(GridArray[y, x]);
+                    Console.Write(GridArray[y, x].Character);
                     Console.ForegroundColor = ConsoleColor.White;
                 }
 
@@ -66,7 +96,7 @@ namespace Path_Finder
                     {
                         if (x == randomX[i] && y == randomY[i])
                         {
-                            GridArray[y, x] = OBSTACLE;
+                            GridArray[y, x] = new Spot { F = 0, G = 0, H = 0, X = x, Y = y, Character = OBSTACLE };
                             randomNumberSelected = true;
                         }
                     }
@@ -74,43 +104,100 @@ namespace Path_Finder
                     if (randomNumberSelected)
                         continue;
 
-                    if (x == 0 && y == 0)
-                        GridArray[y, x] = PLAYER;
-                    else if (x == horizontalPoints - 1 && y == verticalPoints - 1)
-                        GridArray[y, x] = DESTINATION;
+                    if (x == start.X && y == start.X)
+                        GridArray[y, x] = start;
+                    else if (x == end.X && y == end.Y)
+                        GridArray[y, x] = end;
                     else
-                        GridArray[y, x] = SPACE;
+                    {
+                        GridArray[y, x] = new Spot()
+                        {
+                            X = x,
+                            Y = y,
+                            Character = SPACE
+                        };
+                    }                     
                 }               
             }
 
             DrawGrid();
+            UpdateNeighbours();
         }
 
-        public void UpdateGrid(Direction direction)
+        public void UpdateGridWithSpot(Spot spot)
+        {
+            GridArray[PlayerPosition.Y, PlayerPosition.X].Character = ROUTE;
+            
+            PlayerPosition.X = spot.X;
+            PlayerPosition.Y = spot.Y;
+
+            GridArray[spot.Y, spot.X] = spot;               
+
+            //if(spot.Y % 5 == 0)
+                DrawGrid();
+            UpdateNeighbours();
+        }
+
+        public void UpdateGridWithDirection(Direction direction)
         {
             switch(direction)
             {
                 case Direction.Up:
-                    GridArray[PlayerPosition.Y,PlayerPosition.X] = ROUTE;
+                    GridArray[PlayerPosition.Y,PlayerPosition.X].Character = ROUTE;
                     PlayerPosition.Y -= 1;
-                    GridArray[PlayerPosition.Y, PlayerPosition.X] = PLAYER;
+                    GridArray[PlayerPosition.Y, PlayerPosition.X].Character = PLAYER;
                     break;
                 case Direction.Down:
-                    GridArray[PlayerPosition.Y, PlayerPosition.X] = ROUTE;
+                    GridArray[PlayerPosition.Y, PlayerPosition.X].Character = ROUTE;
                     PlayerPosition.Y += 1;
-                    GridArray[PlayerPosition.Y, PlayerPosition.X] = PLAYER;
+                    GridArray[PlayerPosition.Y, PlayerPosition.X].Character = PLAYER;
                     break;
                 case Direction.Left:
-                    GridArray[PlayerPosition.Y, PlayerPosition.X] = ROUTE;
+                    GridArray[PlayerPosition.Y, PlayerPosition.X].Character = ROUTE;
                     PlayerPosition.X -= 1;
-                    GridArray[PlayerPosition.Y, PlayerPosition.X] = PLAYER;
+                    GridArray[PlayerPosition.Y, PlayerPosition.X].Character = PLAYER;
                     break;
                 case Direction.Right:
-                    GridArray[PlayerPosition.Y, PlayerPosition.X] = ROUTE;
+                    GridArray[PlayerPosition.Y, PlayerPosition.X].Character = ROUTE;
                     PlayerPosition.X += 1;
-                    GridArray[PlayerPosition.Y, PlayerPosition.X] = PLAYER;
-                    break;
+                    GridArray[PlayerPosition.Y, PlayerPosition.X].Character = PLAYER;
+                    break;                
             }
+
+            DrawGrid();
+            UpdateNeighbours();
+        }
+
+        // Update all Neighbours
+        // TODO: Develop a more efficient way of doing this
+        public void UpdateNeighbours()
+        {
+            for (int y = 0; y < verticalPoints; y++)
+            {
+                for (int x = 0; x < horizontalPoints; x++)
+                {
+                    // Clear List
+                    GridArray[y, x].Neighbours = new List<Spot>() { };
+
+                    // Recalculate all neighbours
+                    if (y < verticalPoints - 1)
+                        GridArray[y, x].Neighbours.Add(GridArray[y + 1, x]);
+                    if(y > 0)
+                        GridArray[y, x].Neighbours.Add(GridArray[y - 1, x]); 
+                    if(x < horizontalPoints - 1)
+                        GridArray[y, x].Neighbours.Add(GridArray[y, x + 1]);
+                    if(x > 0)
+                        GridArray[y, x].Neighbours.Add(GridArray[y, x - 1]);
+                }
+            }
+        }
+
+        public void DisplayPath(List<Spot> optimalPath)
+        {
+            SetupGrid();
+
+            for (int i = 0; i < optimalPath.Count; i++)
+                UpdateGridWithSpot(optimalPath[i]);
 
             DrawGrid();
         }
