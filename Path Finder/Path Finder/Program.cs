@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using static Path_Finder.Grid;
+using System.Diagnostics;
 
 namespace Path_Finder
 {
@@ -11,16 +11,22 @@ namespace Path_Finder
         static void Main(string[] args)
         {
             Grid grid = new Grid();
-            grid.SetupGrid();
+            grid.SetupGrid(true);
 
             Console.Write("\n\nPress any key to find the optimal path...");
-            Console.ReadKey();            
+            Console.ReadKey();
 
-            List<Spot> optimalPath = PathFinder.FindPath(grid);            
+            var timer = new Stopwatch();
+            timer.Start();
+            List<Spot> optimalPath = PathFinder.FindPath(grid);
+            timer.Stop();
 
             grid.DisplayPath(optimalPath);
 
-            string output = optimalPath.Count > 0 ? "\n\nPress any key to end..." : "\n\nNO SOLUTIONS FOUND!\n\nPress any key to end...";
+            TimeSpan timeTaken = timer.Elapsed;
+            string timeTakenString = "Time taken: " + timeTaken.ToString(@"ss\.ffff");
+
+            string output = optimalPath.Count > 0 ? $"\n\n{timeTakenString} secs\n\nPress any key to end..." : $"\n\n{timeTakenString} secs \n\nNO SOLUTIONS FOUND!\n\nPress any key to end...";
             Console.Write(output);
             Console.ReadKey();
         }
