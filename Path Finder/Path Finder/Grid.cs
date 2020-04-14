@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using static Path_Finder.PathFinder;
 
 namespace Path_Finder
 {
@@ -85,26 +86,26 @@ namespace Path_Finder
             DrawGrid();
         }
 
-        public void UpdateGrid(string direction)
+        public void UpdateGrid(Direction direction)
         {
             switch(direction)
             {
-                case "up":
+                case Direction.Up:
                     GridArray[PlayerPosition.Y,PlayerPosition.X] = ROUTE;
                     PlayerPosition.Y -= 1;
                     GridArray[PlayerPosition.Y, PlayerPosition.X] = PLAYER;
                     break;
-                case "down":
+                case Direction.Down:
                     GridArray[PlayerPosition.Y, PlayerPosition.X] = ROUTE;
                     PlayerPosition.Y += 1;
                     GridArray[PlayerPosition.Y, PlayerPosition.X] = PLAYER;
                     break;
-                case "left":
+                case Direction.Left:
                     GridArray[PlayerPosition.Y, PlayerPosition.X] = ROUTE;
                     PlayerPosition.X -= 1;
                     GridArray[PlayerPosition.Y, PlayerPosition.X] = PLAYER;
                     break;
-                case "right":
+                case Direction.Right:
                     GridArray[PlayerPosition.Y, PlayerPosition.X] = ROUTE;
                     PlayerPosition.X += 1;
                     GridArray[PlayerPosition.Y, PlayerPosition.X] = PLAYER;

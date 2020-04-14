@@ -11,6 +11,13 @@ namespace Path_Finder
             Grid grid = new Grid();
             grid.SetupGrid();
 
+            Console.Write("\n\nPress any key to find the optimal path...");
+            Console.ReadKey();
+
+            Console.Clear();
+
+            PathFinder.FindPath(grid);
+
             Console.Write("\n\nPress any key to end...");
             Console.ReadKey();
         }
