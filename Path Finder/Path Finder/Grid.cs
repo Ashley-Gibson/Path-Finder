@@ -8,8 +8,8 @@ namespace Path_Finder
     public class Grid
     {
         // Grid will always be a 2D square/rectangle
-        public const int horizontalPoints = 5;
-        public const int verticalPoints = 5;
+        public const int horizontalPoints = 40;
+        public const int verticalPoints = 30;
         public Spot[,] GridArray = new Spot[verticalPoints, horizontalPoints];
         
         // Grid Characters
@@ -27,9 +27,9 @@ namespace Path_Finder
 
         public readonly Spot start = new Spot()
         {
-            F = 10000,
+            F = verticalPoints + horizontalPoints,
             G = 0,
-            H = 10000,
+            H = verticalPoints + horizontalPoints,
             X = 0,
             Y = 0,
             Character = PLAYER,
@@ -50,7 +50,7 @@ namespace Path_Finder
         };
 
         // Obstacles
-        public const int numberOfObstacles = 30;
+        public const int numberOfObstacles = 100;
         public readonly Random random = new Random();
         public int[] randomX = new int[numberOfObstacles];
         public int[] randomY = new int[numberOfObstacles];
@@ -78,13 +78,14 @@ namespace Path_Finder
             return random.Next(min, max);
         }
 
-        public void SetupGrid()
+        public void SetupGrid(bool randomNumbers = true)
         {
-            for (int i = 0; i < numberOfObstacles; i++)
-            {
-                randomX[i] = GenerateRandomNumber(1, horizontalPoints);
-                randomY[i] = GenerateRandomNumber(0, verticalPoints - 1);
-            }
+            if(randomNumbers)
+                for (int i = 0; i < numberOfObstacles; i++)
+                {
+                    randomX[i] = GenerateRandomNumber(0, horizontalPoints);
+                    randomY[i] = GenerateRandomNumber(0, verticalPoints);
+                }
 
             for (int y = 0; y < verticalPoints; y++)
             {
@@ -133,38 +134,6 @@ namespace Path_Finder
 
             GridArray[spot.Y, spot.X] = spot;               
 
-            //if(spot.Y % 5 == 0)
-                DrawGrid();
-            UpdateNeighbours();
-        }
-
-        public void UpdateGridWithDirection(Direction direction)
-        {
-            switch(direction)
-            {
-                case Direction.Up:
-                    GridArray[PlayerPosition.Y,PlayerPosition.X].Character = ROUTE;
-                    PlayerPosition.Y -= 1;
-                    GridArray[PlayerPosition.Y, PlayerPosition.X].Character = PLAYER;
-                    break;
-                case Direction.Down:
-                    GridArray[PlayerPosition.Y, PlayerPosition.X].Character = ROUTE;
-                    PlayerPosition.Y += 1;
-                    GridArray[PlayerPosition.Y, PlayerPosition.X].Character = PLAYER;
-                    break;
-                case Direction.Left:
-                    GridArray[PlayerPosition.Y, PlayerPosition.X].Character = ROUTE;
-                    PlayerPosition.X -= 1;
-                    GridArray[PlayerPosition.Y, PlayerPosition.X].Character = PLAYER;
-                    break;
-                case Direction.Right:
-                    GridArray[PlayerPosition.Y, PlayerPosition.X].Character = ROUTE;
-                    PlayerPosition.X += 1;
-                    GridArray[PlayerPosition.Y, PlayerPosition.X].Character = PLAYER;
-                    break;                
-            }
-
-            DrawGrid();
             UpdateNeighbours();
         }
 
@@ -194,7 +163,7 @@ namespace Path_Finder
 
         public void DisplayPath(List<Spot> optimalPath)
         {
-            SetupGrid();
+            SetupGrid(false);
 
             for (int i = 0; i < optimalPath.Count; i++)
                 UpdateGridWithSpot(optimalPath[i]);
