@@ -16,7 +16,7 @@ namespace Path_Finder
             Console.Write("\n\nPress any key to find the optimal path...");
             Console.ReadKey();            
 
-            List<Spot> optimalPath = PathFinder.FindPath(grid);
+            List<Spot> optimalPath = PathFinder.FindPath(grid);            
 
             grid.DisplayPath(optimalPath);
 

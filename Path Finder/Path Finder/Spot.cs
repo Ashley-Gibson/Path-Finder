@@ -11,7 +11,7 @@ namespace Path_Finder
         public int Y;
         public char Character;
         public List<Spot> Neighbours;
-        public List<Spot> PreviousDirection;
+        public List<Spot> PreviousSpot;
 
         public Spot()            
         {
@@ -22,7 +22,7 @@ namespace Path_Finder
             Y = 0;
             Character = Grid.SPACE;
             Neighbours = new List<Spot>();
-            PreviousDirection = new List<Spot>();
+            PreviousSpot = new List<Spot>();
         }
     }
 }

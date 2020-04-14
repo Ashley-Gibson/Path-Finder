@@ -8,8 +8,8 @@ namespace Path_Finder
     public class Grid
     {
         // Grid will always be a 2D square/rectangle
-        public const int horizontalPoints = 30;
-        public const int verticalPoints = 20;
+        public const int horizontalPoints = 5;
+        public const int verticalPoints = 5;
         public Spot[,] GridArray = new Spot[verticalPoints, horizontalPoints];
         
         // Grid Characters
@@ -27,14 +27,14 @@ namespace Path_Finder
 
         public readonly Spot start = new Spot()
         {
-            F = 0,
+            F = 10000,
             G = 0,
-            H = 0,
+            H = 10000,
             X = 0,
             Y = 0,
             Character = PLAYER,
             Neighbours = new List<Spot>(),
-            PreviousDirection = new List<Spot>()
+            PreviousSpot = new List<Spot>()
         };
 
         public readonly Spot end = new Spot()
@@ -46,7 +46,7 @@ namespace Path_Finder
             Y = verticalPoints - 1,
             Character = DESTINATION,
             Neighbours = new List<Spot>(),
-            PreviousDirection = new List<Spot>()
+            PreviousSpot = new List<Spot>()
         };
 
         // Obstacles
@@ -133,7 +133,7 @@ namespace Path_Finder
 
             GridArray[spot.Y, spot.X] = spot;               
 
-           // if(spot.Y % 10 == 0)
+            //if(spot.Y % 5 == 0)
                 DrawGrid();
             UpdateNeighbours();
         }
@@ -172,9 +172,9 @@ namespace Path_Finder
         // TODO: Develop a more efficient way of doing this
         public void UpdateNeighbours()
         {
-            for (int y = 0; y < verticalPoints - 1; y++)
+            for (int y = 0; y < verticalPoints; y++)
             {
-                for (int x = 0; x < horizontalPoints - 1; x++)
+                for (int x = 0; x < horizontalPoints; x++)
                 {
                     // Clear List
                     GridArray[y, x].Neighbours = new List<Spot>() { };
@@ -194,6 +194,8 @@ namespace Path_Finder
 
         public void DisplayPath(List<Spot> optimalPath)
         {
+            SetupGrid();
+
             for (int i = 0; i < optimalPath.Count; i++)
                 UpdateGridWithSpot(optimalPath[i]);
 

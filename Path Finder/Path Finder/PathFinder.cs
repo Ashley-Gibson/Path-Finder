@@ -24,7 +24,7 @@ namespace Path_Finder
         public static List<Spot> FindPath(Grid grid)
         {
             List<Spot> optimalPath = new List<Spot>();
-
+            
             grid.openSet.Add(grid.GridArray[grid.PlayerPosition.Y,grid.PlayerPosition.X]);
 
             while(grid.openSet.Count > 0)
@@ -42,12 +42,6 @@ namespace Path_Finder
 
                 if (grid.openSet[winner].X == grid.end.X && grid.openSet[winner].Y == grid.end.Y)
                 {
-                    Spot temp = current;
-                    while (temp.PreviousDirection != null)
-                    {
-                        optimalPath.Add(temp.PreviousDirection[0]);
-                    }
-
                     Console.WriteLine("DONE!");
                     return optimalPath;
                 }
@@ -58,11 +52,12 @@ namespace Path_Finder
                 for (int i = 0; i < current.Neighbours.Count; i++)
                 {
                     Spot neighbour = current.Neighbours[i];
-                    if (!grid.closedSet.Exists(x => x.X == neighbour.X && x.Y == neighbour.Y))
+                    
+                    if (!grid.closedSet.Exists(c => c.X == neighbour.X && c.Y == neighbour.Y))
                     {
                         int tempG = current.G + 1;
 
-                        if (grid.openSet.Exists(x => x.X == neighbour.X && x.Y == neighbour.Y))
+                        if (grid.openSet.Exists(o => o.X == neighbour.X && o.Y == neighbour.Y))
                         {
                             if (tempG < neighbour.G)
                                 neighbour.G = tempG;
@@ -75,8 +70,16 @@ namespace Path_Finder
 
                         neighbour.H = CalculateHeuristic(neighbour, grid.end);
                         neighbour.F = neighbour.G + neighbour.H;
-                        neighbour.PreviousDirection = current.PreviousDirection;
+                        neighbour.PreviousSpot.Add(current);
                     }
+                }
+                optimalPath = new List<Spot>();
+                Spot temp = current;
+                optimalPath.Add(temp);
+                while (temp.PreviousSpot.Count > 0)
+                {
+                    optimalPath.Add(temp.PreviousSpot[0]);
+                    temp = temp.PreviousSpot[0];
                 }
             }
 
