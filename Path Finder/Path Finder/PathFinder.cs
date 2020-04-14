@@ -17,8 +17,9 @@ namespace Path_Finder
 
         private static int CalculateHeuristic(Spot a, Spot b)
         {
-            int d = Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
-            return d;
+            int euclideanDistance = (int)Math.Sqrt(((a.X - b.X) * (a.X - b.X)) + ((a.Y - b.Y) * (a.Y - b.Y)));
+            int manhattanDistance = Math.Abs(a.X - b.X) + Math.Abs(a.Y - b.Y);
+            return euclideanDistance;
         }
 
         public static List<Spot> FindPath(Grid grid)
@@ -56,21 +57,28 @@ namespace Path_Finder
                     if (!grid.closedSet.Exists(c => c.X == neighbour.X && c.Y == neighbour.Y) && grid.GridArray[neighbour.Y, neighbour.X].Character != OBSTACLE)
                     {
                         int tempG = current.G + 1;
-
+                        bool newPath = false;
                         if (grid.openSet.Exists(o => o.X == neighbour.X && o.Y == neighbour.Y))
                         {
                             if (tempG < neighbour.G)
+                            {
                                 neighbour.G = tempG;
+                                newPath = true;
+                            }
                         }
                         else
                         {
                             neighbour.G = tempG;
                             grid.openSet.Add(neighbour);
+                            newPath = true;
                         }
 
-                        neighbour.H = CalculateHeuristic(neighbour, grid.end);
-                        neighbour.F = neighbour.G + neighbour.H;
-                        neighbour.PreviousSpot.Add(current);
+                        if (newPath)
+                        {
+                            neighbour.H = CalculateHeuristic(neighbour, grid.end);
+                            neighbour.F = neighbour.G + neighbour.H;
+                            neighbour.PreviousSpot.Add(current);
+                        }
                     }
                 }
                 optimalPath = new List<Spot>();
