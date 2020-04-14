@@ -6,8 +6,8 @@ namespace Path_Finder
 {
     public class Grid
     {
-        public const int horizontalPoints = 40;
-        public const int verticalPoints = 30;
+        public const int horizontalPoints = 50;
+        public const int verticalPoints = 50;
         public Spot[,] GridArray = new Spot[verticalPoints, horizontalPoints];
         
         // Grid Characters
@@ -48,7 +48,7 @@ namespace Path_Finder
         };
 
         // Obstacles
-        public const int numberOfObstacles = 100;
+        public const int numberOfObstacles = 400;
         public readonly Random random = new Random();
         public int[] randomX = new int[numberOfObstacles];
         public int[] randomY = new int[numberOfObstacles];
