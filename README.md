@@ -17,7 +17,7 @@
 This project was inspired by a set of YouTube videos produced by The Coding Train on [YouTube](https://youtu.be/aKYlikFAV4k)
 
 ### A* Pathfinding Algorithm
-
+```javascript
     total_path := {current}
     while current in cameFrom.Keys:
         current := cameFrom[current]
@@ -66,3 +66,4 @@ This project was inspired by a set of YouTube videos produced by The Coding Trai
 
     // Open set is empty but goal was never reached
     return failure
+```
