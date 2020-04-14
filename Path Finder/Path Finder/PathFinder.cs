@@ -42,7 +42,7 @@ namespace Path_Finder
 
                 if (grid.openSet[winner].X == grid.end.X && grid.openSet[winner].Y == grid.end.Y)
                 {
-                    Console.WriteLine("DONE!");
+                    grid.solutionFound = true;
                     return optimalPath;
                 }
 
@@ -53,7 +53,7 @@ namespace Path_Finder
                 {
                     Spot neighbour = current.Neighbours[i];
                     
-                    if (!grid.closedSet.Exists(c => c.X == neighbour.X && c.Y == neighbour.Y))
+                    if (!grid.closedSet.Exists(c => c.X == neighbour.X && c.Y == neighbour.Y) && grid.GridArray[neighbour.Y, neighbour.X].Character != OBSTACLE)
                     {
                         int tempG = current.G + 1;
 
@@ -84,7 +84,7 @@ namespace Path_Finder
             }
 
             // Return no solution possible
-            return new List<Spot>();
+            return optimalPath;
         }       
     }
 }
